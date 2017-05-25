@@ -84,7 +84,6 @@ public class HelloJNI {
             test1_sum = test1_sum + (endTime1 - startTime1);
         }
         System.out.println("Average time Test 1: " + test1_sum / num_iterations + " ms");
-
         //hello.sayHello(tc);  // invoke the native method
 
 
@@ -109,12 +108,11 @@ public class HelloJNI {
             test2_sum = test2_sum + (endTime2 - startTime2);
         }
         System.out.println("Average time Test 2: " + test2_sum / num_iterations + " ms");
-
         /*
             Use memory-mapped file to share data between Java/C
          */
-        final String shared_mem_file = "shared_mem.file";
-        final long buff_size = 4096 * 25600;
+        final String shared_mem_file = "/tmp/shared_mem.file";
+        final long buff_size = 4096 * 25600 *10;
 
         File mem_mapped_file = new File(shared_mem_file);
 

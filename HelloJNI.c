@@ -113,6 +113,7 @@ JNIEXPORT jint JNICALL Java_HelloJNI_processReadBuffer
         (JNIEnv *env, jobject thisObj) {
 
     int file_desc;
+    int i;
     int page_size;
     char *shared_buff;
     struct stat sbuf;
@@ -120,12 +121,12 @@ JNIEXPORT jint JNICALL Java_HelloJNI_processReadBuffer
     page_size = getpagesize();
 
     // open shared file in READ_ONLY state
-    if ((file_desc = open("shared_mem.file", O_RDONLY)) == -1) {
+    if ((file_desc = open("/tmp/shared_mem.file", O_RDONLY)) == -1) {
         perror("open");
         return 1;
     }
 
-    if (stat("shared_mem.file", &sbuf) == -1) {
+    if (stat("/tmp/shared_mem.file", &sbuf) == -1) {
         perror("stat");
         return 3;
     }
@@ -170,7 +171,7 @@ JNIEXPORT jint JNICALL Java_HelloJNI_processReadBuffer
     printf("num reads: %d\n", num_reads);
 #endif
     shared_buff = shared_buff + sizeof(int);
-    for (int i = 0; i < num_reads; i++) {
+    for (i = 0; i < num_reads; i++) {
         // get int pointer which points to same address as shared_buff
         struct GATKRead *read = (struct GATKRead *) shared_buff;
 #ifdef DEBUG3
