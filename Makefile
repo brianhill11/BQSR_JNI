@@ -1,17 +1,25 @@
-CLASS_PATH = ./:/Users/bhizzle/code/github/gatk/build/classes/main:/Users/bhizzle/code/github/htsjdk/build/classes/main
+CLASS_PATH = ./:$(HOME)/code/github/gatk/build/classes/main:$(HOME)/code/github/htsjdk/build/classes/main
+CXXFLAGS += " -fPIC -std=c99"
 
 vpath %.class $(CLASS_PATH)
 
-all : libHello.jnilib
+all : libHello
 
 # $@ matches the target, $< matches the first dependancy
 # NOTE: may need to change suffix for different OS
 # (ex. *.so for Linux, *.dll for Windows)
-libHello.jnilib : HelloJNI.o
-	gcc -shared -o $@ $<
+UNAME := $(shell uname)
+ifeq ($(UNAME), Linux)
+libHello : HelloJNI.o
+	gcc -shared -o $@.so $<
+endif 
+ifeq ($(UNAME), Darwin)
+libHello : HelloJNI.o
+	gcc -shared -o $@.jnilib $<
+endif
 
 HelloJNI.o : HelloJNI.c HelloJNI.h
-	gcc -I/Library/Java/JavaVirtualMachines/jdk1.8.0_101.jdk/Contents/Home/include/darwin -I/Library/Java/JavaVirtualMachines/jdk1.8.0_101.jdk/Contents/Home/include -c $< -o $@
+	gcc -fPIC -I/Library/Java/JavaVirtualMachines/jdk1.8.0_101.jdk/Contents/Home/include/darwin -I/Library/Java/JavaVirtualMachines/jdk1.8.0_101.jdk/Contents/Home/include -I/usr/lib/jvm/java-1.8.0-openjdk/include/ -I/usr/lib/jvm/java-1.8.0-openjdk/include/linux -c $< -o $@
 
 HelloJNI.h : HelloJNI.class
 	javah -classpath $(CLASS_PATH) $*
